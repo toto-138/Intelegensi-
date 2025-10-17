@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "homepage": "https://toto-138.github.io/Intelegensi-",
+  "homepage": "https://toto-138.github.io/Intelegensi-/",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
