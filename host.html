@@ -1,141 +1,135 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Host — Permainan ADIL</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Host | Permainan ADIL</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  body {
+    background: radial-gradient(circle at center, #022c22, #011a12);
+    color: #d1fae5;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  #current {
+    font-size: 6rem;
+    font-weight: 900;
+    color: #6ee7b7;
+    text-shadow: 0 0 40px #10b981;
+    margin-top: 1rem;
+  }
+  .btn {
+    background: #10b981;
+    color: white;
+    font-weight: bold;
+    border-radius: 0.75rem;
+    padding: 0.8rem 2rem;
+    margin: 1rem;
+    transition: all 0.25s ease;
+  }
+  .btn:hover { background: #34d399; transform: scale(1.05); }
+  #history {
+    background: rgba(6,95,70,0.3);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    text-align: left;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+  #history h3 {
+    text-align: center;
+    font-weight: bold;
+    color: #a7f3d0;
+  }
+  .entry {
+    display: inline-block;
+    background: rgba(16,185,129,0.2);
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.5rem;
+    margin: 0.3rem;
+    font-weight: 700;
+    color: #bbf7d0;
+  }
+</style>
 </head>
-<body class="bg-gradient-to-b from-emerald-700 to-emerald-600 min-h-screen flex items-center justify-center">
-  <div class="w-full max-w-3xl mx-6">
-    <header class="flex items-center justify-between mb-6 text-white">
-      <a href="index.html" class="text-sm bg-white/10 px-3 py-2 rounded-lg hover:bg-white/20">← Kembali</a>
-      <h1 class="text-2xl font-extrabold">🎲 PERMAINAN ADIL — HOST</h1>
-      <div></div>
-    </header>
+<body>
 
-    <section class="bg-emerald-900/40 p-6 rounded-2xl shadow-2xl text-white">
-      <div class="flex flex-col sm:flex-row items-center gap-6">
-        <div class="flex-1 text-center">
-          <div id="display-number" class="big-number-glow">--</div>
-          <div class="mt-3 flex justify-center gap-3">
-            <button id="btn-kocok" class="btn-main">KOCOK ANGKA</button>
-            <button id="btn-reset" class="btn-outline">RESET</button>
-          </div>
-          <div class="mt-3 flex justify-center gap-3">
-            <button id="btn-copy" class="btn-small">Copy Nomor</button>
-            <button id="btn-share" class="btn-small">Bagikan Link</button>
-            <button id="btn-export" class="btn-small">Export Riwayat</button>
-          </div>
-        </div>
+<h1 class="text-3xl font-bold text-emerald-300 mb-4">🎙️ Host Permainan ADIL</h1>
 
-        <div class="w-full sm:w-80">
-          <div class="text-sm text-emerald-100/80 mb-2">Riwayat Terakhir</div>
-          <div id="riwayat" class="riwayat-panel h-60 overflow-auto p-3 rounded-lg bg-black/10">
-            Belum ada angka keluar
-          </div>
-          <div class="mt-3 text-xs text-emerald-100/70">
-            <label class="inline-flex items-center gap-2"><input id="animate-toggle" type="checkbox" checked class="accent-emerald-300"> Animasi angka</label>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+<div id="current">--</div>
 
-  <script src="script.js"></script>
-  <script>
-    // Host UI bindings
-    const btnKocok = document.getElementById('btn-kocok');
-    const btnReset = document.getElementById('btn-reset');
-    const display = document.getElementById('display-number');
-    const riwayatDiv = document.getElementById('riwayat');
-    const btnCopy = document.getElementById('btn-copy');
-    const btnShare = document.getElementById('btn-share');
-    const btnExport = document.getElementById('btn-export');
-    const animateToggle = document.getElementById('animate-toggle');
+<div>
+  <button id="btnKocok" class="btn">🎲 KOCOK ANGKA</button>
+  <button id="btnReset" class="btn bg-red-600 hover:bg-red-700">♻️ RESET</button>
+</div>
 
-    function renderHistoryUI() {
-      const hist = ADIL.getHistory();
-      if (!hist.length) {
-        riwayatDiv.innerHTML = '<div class="text-emerald-200/60">Belum ada angka keluar</div>';
-      } else {
-        riwayatDiv.innerHTML = hist.map(h=>`<div class="riwayat-item">${h}</div>`).join('');
-      }
+<div id="history">
+  <h3>Riwayat Kocok</h3>
+  <div id="list"></div>
+</div>
+
+<script>
+  const hurufADIL = ['A', 'D', 'I', 'L'];
+  let angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
+  let riwayat = JSON.parse(localStorage.getItem('adil-history')) || [];
+
+  const currentEl = document.getElementById('current');
+  const listEl = document.getElementById('list');
+
+  function tampilRiwayat() {
+    listEl.innerHTML = '';
+    riwayat.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.textContent = `${item.huruf}:${String(item.angka).padStart(2, '0')}`;
+      listEl.appendChild(div);
+    });
+  }
+
+  function acakAngka() {
+    if (angkaBelumKeluar.length === 0) {
+      alert('Semua angka sudah keluar!');
+      return;
     }
 
-    // Kocok
-    btnKocok.addEventListener('click', () => {
-  const angka = ADIL.hostDraw({ animate: animateToggle.checked, displayEl: display });
+    const huruf = hurufADIL[Math.floor(Math.random() * 4)];
+    const index = Math.floor(Math.random() * angkaBelumKeluar.length);
+    const angka = angkaBelumKeluar.splice(index, 1)[0];
 
-  // Tambahkan jeda sebelum riwayat muncul
-  setTimeout(() => {
-    renderHistoryUI();
-  }, 1200); // jeda 1,2 detik agar muncul setelah animasi
-    });
+    const hasil = { huruf, angka };
+    localStorage.setItem('adil-last', angka); // kirim angka ke pemain
+    localStorage.setItem('adil-last-huruf', huruf);
 
-    // Reset
-    btnReset.addEventListener('click', () => {
-      if (!confirm('Reset riwayat?')) return;
-      ADIL.resetHistory();
-      renderHistoryUI();
-      display.textContent = '--';
-      display.classList.remove('pop');
-    });
+    currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+    currentEl.style.color = '#6ee7b7';
+    currentEl.style.textShadow = '0 0 40px #10b981';
 
-    // copy last
-    btnCopy.addEventListener('click', () => {
-      const last = ADIL.getLast();
-      if (!last) return alert('Belum ada angka untuk dicopy.');
-      navigator.clipboard.writeText(String(last)).then(()=> alert('Nomor disalin ke clipboard.'));
-    });
+    setTimeout(() => {
+      riwayat.unshift(hasil);
+      localStorage.setItem('adil-history', JSON.stringify(riwayat));
+      tampilRiwayat();
+    }, 2000); // jeda 2 detik sebelum masuk riwayat
+  }
 
-    // share link ?last=NN
-    btnShare.addEventListener('click', () => {
-      const last = ADIL.getLast();
-      if (!last) return alert('Belum ada angka untuk dibagikan.');
-      const url = `${location.origin}${location.pathname.replace(/host.html.*/,'host.html')}?last=${last}`;
-      navigator.clipboard.writeText(url).then(()=> alert('Link disalin. Kirim ke pemain.'));
-    });
+  document.getElementById('btnKocok').addEventListener('click', acakAngka);
 
-    // export riwayat
-    btnExport.addEventListener('click', () => {
-      const hist = ADIL.getHistory();
-      if (!hist.length) return alert('Belum ada riwayat.');
-      const blob = new Blob([hist.join('\n')], {type:'text/plain'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'riwayat_kocok.txt';
-      a.click();
-      URL.revokeObjectURL(a.href);
-    });
-
-    // render initial
-    renderHistoryUI();
-
-    // if host opened with ?last=NN, inject
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('last')) {
-      const v = Number(params.get('last'));
-      if (!isNaN(v)) {
-        ADIL.pushExternalNumber(v);
-        renderHistoryUI();
-        display.textContent = v;
-      }
+  document.getElementById('btnReset').addEventListener('click', () => {
+    if (confirm('Reset semua hasil kocokan?')) {
+      angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
+      riwayat = [];
+      localStorage.removeItem('adil-last');
+      localStorage.removeItem('adil-last-huruf');
+      localStorage.removeItem('adil-history');
+      currentEl.textContent = '--';
+      listEl.innerHTML = '';
     }
+  });
 
-    // listen storage for updates
-    window.addEventListener('storage', (ev) => {
-      if (ev.key === ADIL.STORAGE_KEYS.HISTORY) renderHistoryUI();
-      if (ev.key === ADIL.STORAGE_KEYS.LAST) {
-        const l = Number(localStorage.getItem(ADIL.STORAGE_KEYS.LAST));
-        if (!isNaN(l)) {
-          display.textContent = l;
-          display.classList.add('pop');
-          setTimeout(()=> display.classList.remove('pop'), 700);
-        }
-      }
-    });
-  </script>
+  tampilRiwayat();
+</script>
 </body>
 </html>
