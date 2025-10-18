@@ -20,6 +20,19 @@
     color: #6ee7b7;
     text-shadow: 0 0 40px #10b981;
     margin-top: 1rem;
+    transition: all 0.4s ease;
+  }
+  .pop {
+    transform: scale(1.2);
+    text-shadow: 0 0 60px #10b981;
+  }
+  .rolling {
+    animation: roll 0.1s linear infinite;
+  }
+  @keyframes roll {
+    0% { opacity: 0.2; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.2; transform: scale(0.9); }
   }
   .btn {
     background: #10b981;
@@ -79,6 +92,12 @@
 
   const currentEl = document.getElementById('current');
   const listEl = document.getElementById('list');
+  const kocokBtn = document.getElementById('btnKocok');
+
+  let rollingInterval = null;
+
+  const rollSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_0dbf8c7a57.mp3?filename=rolling-dice-1-26694.mp3");
+  const dingSound = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_1c9a2eb3f8.mp3?filename=correct-2-46134.mp3");
 
   function tampilRiwayat() {
     listEl.innerHTML = '';
@@ -90,7 +109,23 @@
     });
   }
 
-  function acakAngka() {
+  function animasiKocok() {
+    let counter = 0;
+    rollingInterval = setInterval(() => {
+      const huruf = hurufADIL[Math.floor(Math.random() * 4)];
+      const angka = Math.floor(Math.random() * 50) + 1;
+      currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+      currentEl.classList.add("rolling");
+      counter++;
+      if (counter > 15) { // ~1.5 detik animasi
+        clearInterval(rollingInterval);
+        currentEl.classList.remove("rolling");
+        hasilKocok();
+      }
+    }, 100);
+  }
+
+  function hasilKocok() {
     if (angkaBelumKeluar.length === 0) {
       alert('Semua angka sudah keluar!');
       return;
@@ -101,21 +136,30 @@
     const angka = angkaBelumKeluar.splice(index, 1)[0];
 
     const hasil = { huruf, angka };
-    localStorage.setItem('adil-last', angka); // kirim angka ke pemain
+    localStorage.setItem('adil-last', angka); 
     localStorage.setItem('adil-last-huruf', huruf);
 
+    // efek hasil
     currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
-    currentEl.style.color = '#6ee7b7';
-    currentEl.style.textShadow = '0 0 40px #10b981';
+    currentEl.classList.add("pop");
+    rollSound.pause(); rollSound.currentTime = 0;
+    dingSound.play();
 
+    setTimeout(() => currentEl.classList.remove("pop"), 800);
+
+    // masukkan ke riwayat setelah 2 detik
     setTimeout(() => {
       riwayat.unshift(hasil);
       localStorage.setItem('adil-history', JSON.stringify(riwayat));
       tampilRiwayat();
-    }, 2000); // jeda 2 detik sebelum masuk riwayat
+    }, 2000);
   }
 
-  document.getElementById('btnKocok').addEventListener('click', acakAngka);
+  kocokBtn.addEventListener('click', () => {
+    rollSound.currentTime = 0;
+    rollSound.play();
+    animasiKocok();
+  });
 
   document.getElementById('btnReset').addEventListener('click', () => {
     if (confirm('Reset semua hasil kocokan?')) {
