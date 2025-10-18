@@ -66,9 +66,12 @@
 
     // Kocok
     btnKocok.addEventListener('click', () => {
-      const angka = ADIL.hostDraw({ animate: animateToggle.checked, displayEl: display });
-      // renderHistoryUI will be triggered by storage event in other tabs; call now for same tab
-      setTimeout(renderHistoryUI, 300);
+  const angka = ADIL.hostDraw({ animate: animateToggle.checked, displayEl: display });
+
+  // Tambahkan jeda sebelum riwayat muncul
+  setTimeout(() => {
+    renderHistoryUI();
+  }, 1200); // jeda 1,2 detik agar muncul setelah animasi
     });
 
     // Reset
