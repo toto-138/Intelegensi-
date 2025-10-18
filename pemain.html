@@ -16,7 +16,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0.5rem;
-      background: rgba(4, 120, 87, 0.2);
+      background: rgba(4, 120, 87, 0.25);
       padding: 0.8rem;
       border-radius: 1rem;
       transition: transform 0.3s ease;
@@ -79,7 +79,7 @@
       margin-top: 1rem;
     }
     @media (min-width: 768px) {
-      .boards-container.multiple {
+      .boards-container {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       }
     }
@@ -96,7 +96,7 @@
     <div id="latest-number">--</div>
   </div>
 
-  <div id="boards-container" class="boards-container w-full max-w-5xl"></div>
+  <div id="boards-container" class="boards-container w-full max-w-6xl"></div>
 
   <div id="options-panel" class="w-80 text-center">
     <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
@@ -107,7 +107,7 @@
       <option value="4">4 papan</option>
     </select>
 
-    <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI PAPAN</button>
+    <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
     <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
 
     <label class="inline-flex items-center space-x-2">
@@ -117,11 +117,9 @@
   </div>
 
   <script>
-    // === SUARA ===
     const dingSound = new Audio('./sounds/ding.mp3');
     dingSound.volume = 0.5;
 
-    // === OPSI PANEL ===
     const btnOpsi = document.getElementById('btnOpsi');
     const panel = document.getElementById('options-panel');
     btnOpsi.addEventListener('click', () => {
@@ -129,9 +127,10 @@
     });
 
     const boardsContainer = document.getElementById('boards-container');
-    let boards = {};
+    const boards = {};
     let jumlahPapan = 1;
 
+    // Generate papan acak (10 total)
     function generateBoard(num) {
       const nums = Array.from({length: 50}, (_, i) => i + 1);
       const boardNums = [];
@@ -143,13 +142,14 @@
       return boardNums;
     }
 
+    for (let i = 1; i <= 10; i++) generateBoard(i);
+
     function renderBoards() {
       boardsContainer.innerHTML = '';
-      boardsContainer.classList.toggle('multiple', jumlahPapan > 1);
       for (let n = 1; n <= jumlahPapan; n++) {
         const boardEl = document.createElement('div');
         boardEl.className = 'board';
-        const nums = boards[n] || generateBoard(n);
+        const nums = boards[n];
         nums.forEach(num => {
           const cell = document.createElement('div');
           cell.className = 'cell';
@@ -161,7 +161,6 @@
       }
     }
 
-    // === OPSI EVENT ===
     document.getElementById('jumlah-papan').addEventListener('change', e => {
       jumlahPapan = Number(e.target.value);
       renderBoards();
@@ -176,7 +175,6 @@
       document.querySelectorAll('.cell.checked').forEach(c => c.classList.remove('checked'));
     });
 
-    // === ANGKA BARU DARI HOST ===
     function updateLatestNumber(num) {
       const el = document.getElementById('latest-number');
       el.textContent = String(num).padStart(2, '0');
@@ -186,7 +184,6 @@
       setTimeout(() => el.classList.remove('pop'), 500);
     }
 
-    // simulasi sinkronisasi (localStorage)
     window.addEventListener('storage', e => {
       if (e.key === 'adil-last') {
         const val = Number(e.newValue);
@@ -194,9 +191,7 @@
       }
     });
 
-    // Render awal
-    for (let i = 1; i <= 10; i++) generateBoard(i);
     renderBoards();
   </script>
 </body>
-        </html>
+</html>
