@@ -116,13 +116,23 @@
         }
       });
     }
+    function updateLatestNumber(num) {
+  const el = document.getElementById('latest-number');
+  if (!el) return;
+  el.textContent = String(num).padStart(2,'0');
+  el.classList.add('pop');
+  setTimeout(()=> el.classList.remove('pop'), 600);
+      }
 
     // listen storage events
     window.addEventListener('storage', (ev) => {
-      if (ev.key === ADIL.STORAGE_KEYS.LAST) {
-        const last = Number(localStorage.getItem(ADIL.STORAGE_KEYS.LAST));
-        if (!isNaN(last)) highlightCalled(last);
-      }
+  if (ev.key === ADIL.STORAGE_KEYS.LAST) {
+    const last = Number(localStorage.getItem(ADIL.STORAGE_KEYS.LAST));
+    if (!isNaN(last)) {
+      updateLatestNumber(last);
+      highlightCalled(last);
+    }
+                                                              }
       // boards regenerated in other tab
       if (ev.key === 'adil_dummy_boards') {
         ADIL.initBoardsIfNeeded();
