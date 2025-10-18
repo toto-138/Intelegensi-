@@ -245,14 +245,14 @@
       renderBoards();
     });
 
-    // Update angka terbaru dari Host
-    function updateLatestNumber(num) {
-      const el = document.getElementById('latest-number');
-      el.textContent = String(num).padStart(2, '0');
-      el.classList.add('pop');
-      dingSound.currentTime = 0;
-      dingSound.play();
-      setTimeout(() => el.classList.remove('pop'), 500);
+    // ===== Update angka terbaru & auto centang =====
+function updateLatestNumber(huruf, angka) {
+  const el = document.getElementById('latest-number');
+  el.textContent = `${huruf}:${String(angka).padStart(2,'0')}`;
+  el.classList.add('pop');
+  dingSound.currentTime = 0;
+  dingSound.play();
+  setTimeout(() => el.classList.remove('pop'), 500);
     }
 
     // Mendengarkan event localStorage (angka dari Host)
