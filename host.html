@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Host - Permainan ADIL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="host-container">
+    <header>
+      <a class="back" href="index.html">← Kembali</a>
+      <h1>🎲 PERMAINAN ADIL — HOST</h1>
+    </header>
+
+    <section class="host-panel">
+      <div id="display-number" class="big-number">--</div>
+
+      <div class="host-controls">
+        <button id="btn-kocok" class="btn-large">KOCOK ANGKA</button>
+        <button id="btn-reset" class="btn-large outline">RESET</button>
+      </div>
+
+      <div class="small-row">
+        <button id="btn-copy" class="btn small">Copy Nomor</button>
+        <button id="btn-share" class="btn small">Bagikan Link</button>
+        <button id="btn-export" class="btn small">Export Riwayat</button>
+      </div>
+
+      <h2>Riwayat Angka</h2>
+      <div id="riwayat" class="riwayat">Belum ada angka keluar</div>
+
+      <div class="host-footer muted">
+        <input id="animate-toggle" type="checkbox" checked> <label for="animate-toggle">Animasi</label>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Host-specific bindings (script.js defines global ADIL object)
+    const btnKocok = document.getElementById('btn-kocok');
+    const btnReset = document.getElementById('btn-reset');
+    const display = document.getElementById('display-number');
+    const riwayatDiv = document.getElementById('riwayat');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnShare = document.getElementById('btn-share');
+    const btnExport = document.getElementById('btn-export');
+    const animateToggle = document.getElementById('animate-toggle');
+
+    function renderRiwayat() {
+      const hist = ADIL.getHistory();
+      if (!hist.length) {
+        riwayatDiv.textContent = 'Belum ada angka keluar';
+      } else {
+        riwayatDiv.innerHTML = hist.map(h => `<div class="riwayat-item">${h}</div>`).join('');
+      }
+    }
+
+    btnKocok.addEventListener('click', async () => {
+      const doAnim = animateToggle.checked;
+      const angka = ADIL.hostDraw({ animate: doAnim, displayEl: display });
+      // hostDraw returns immediately; update UI from ADIL internal updates
+    });
+
+    btnReset.addEventListener('click', () => {
+      if (!confirm('Reset semua angka yang keluar?')) return;
+      ADIL.resetHistory();
+      renderRiwayat();
+      display.textContent = '--';
+    });
+
+    btnCopy.addEventListener('click', () => {
+      const last = ADIL.getLast();
+      if (!last) return alert('Belum ada angka untuk dicopy.');
+      navigator.clipboard?.writeText(String(last)).then(() => alert('Nomor disalin ke clipboard.'), ()=> alert('Gagal salin.'));
+    });
+
+    btnShare.addEventListener('click', () => {
+      const last = ADIL.getLast();
+      if (!last) return alert('Belum ada angka untuk dibagikan.');
+      // buat link dengan query param ?last=NN
+      const u = new URL(window.location.href);
+      u.search = '?last=' + last;
+      navigator.clipboard?.writeText(u.toString()).then(()=> alert('Link disalin. Kirim ke pemain.'), ()=> alert('Gagal salin link.'));
+    });
+
+    btnExport.addEventListener('click', () => {
+      const hist = ADIL.getHistory();
+      if (!hist.length) return alert('Belum ada riwayat untuk diekspor.');
+      const blob = new Blob([hist.join('\n')], {type: 'text/plain'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'riwayat_kocok.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // inisialisasi UI
+    renderRiwayat();
+
+    // jika host membuka link dengan ?last=NN (dari share), set it as last
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('last')) {
+      const v = parseInt(params.get('last'),10);
+      if (!isNaN(v)) {
+        ADIL.pushExternalNumber(v);
+        renderRiwayat();
+        display.textContent = v;
+      }
+    }
+
+    // dengarkan pembaruan storage (dari tab lain)
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === ADIL.STORAGE_KEYS.HISTORY) renderRiwayat();
+    });
+  </script>
+</body>
+  </html>
