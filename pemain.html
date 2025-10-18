@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pemain - Permainan ADIL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="player-container">
+    <header>
+      <a class="back" href="index.html">← Kembali</a>
+      <h1>🎯 PERMAINAN ADIL — PEMAIN</h1>
+    </header>
+
+    <section class="player-panel">
+      <div class="controls-row">
+        <label for="select-board">Pilih Papan:</label>
+        <select id="select-board">
+          <!-- options diisi JS -->
+        </select>
+        <button id="btn-generate" class="btn small outline">Regenerate (reset semua papan)</button>
+      </div>
+
+      <div id="board-wrap" class="board-wrap">
+        <!-- papan 4x4 di sini -->
+      </div>
+
+      <div class="player-footer muted">
+        <label><input type="checkbox" id="auto-check"> Centang otomatis saat host memanggil</label>
+      </div>
+
+      <div>
+        <p class="muted small">Papan dibuat acak sekali dan disimpan di browsermu. Untuk mendapatkan papan lain, pilih nomor papan.</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Pemain-specific binding
+    const selectBoard = document.getElementById('select-board');
+    const boardWrap = document.getElementById('board-wrap');
+    const btnGenerate = document.getElementById('btn-generate');
+    const autoCheck = document.getElementById('auto-check');
+
+    function renderSelect() {
+      selectBoard.innerHTML = '';
+      for (let i=1;i<=10;i++){
+        const opt = document.createElement('option');
+        opt.value = i-1;
+        opt.textContent = 'Papan #' + i;
+        selectBoard.appendChild(opt);
+      }
+    }
+
+    function renderBoard(idx) {
+      const board = ADIL.getBoards()[idx];
+      if (!board) return;
+      boardWrap.innerHTML = '';
+      const grid = document.createElement('div');
+      grid.className = 'grid-4';
+      board.forEach((num, i) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        const numText = String(num).padStart(2,'0');
+        cell.innerHTML = `<span class="num">${numText}</span>
+                          <label class="chk"><input type="checkbox" data-num="${num}"/> </label>`;
+        grid.appendChild(cell);
+      });
+      boardWrap.appendChild(grid);
+    }
+
+    selectBoard.addEventListener('change', ()=> {
+      renderBoard(Number(selectBoard.value));
+    });
+
+    btnGenerate.addEventListener('click', ()=> {
+      if (!confirm('Regenerate akan membuat 10 papan baru dan menggantikan yang sekarang untuk semua papan di browser ini. Lanjut?')) return;
+      ADIL.generateAndStoreBoards(true);
+      renderBoard(0);
+    });
+
+    // Reaksi saat host memanggil (sumber: storage or URL param)
+    function highlightCalled(num) {
+      // cek jika ada di board tampil
+      const checkboxes = boardWrap.querySelectorAll('input[type="checkbox"]');
+      let found = false;
+      checkboxes.forEach(chk => {
+        if (Number(chk.dataset.num) === num) {
+          // sorot sel
+          const cell = chk.closest('.cell');
+          cell.classList.add('highlight');
+          // auto-check jika aktif
+          if (autoCheck.checked) chk.checked = true;
+          found = true;
+          setTimeout(()=> cell.classList.remove('highlight'), 1200);
+        }
+      });
+      return found;
+    }
+
+    // listen storage changes (host pushes history)
+    window.addEventListener('storage', (ev) => {
+      if (ev.key === ADIL.STORAGE_KEYS.LAST) {
+        const last = Number(ev.newValue);
+        if (!isNaN(last)) highlightCalled(last);
+      }
+    });
+
+    // if opened with ?last=NN
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('last')) {
+      const v = parseInt(params.get('last'),10);
+      if (!isNaN(v)) {
+        // mark in UI
+        setTimeout(()=> highlightCalled(v), 200);
+      }
+    }
+
+    // init
+    renderSelect();
+    ADIL.initBoardsIfNeeded();
+    renderBoard(0);
+  </script>
+</body>
+</html>
