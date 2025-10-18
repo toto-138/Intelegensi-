@@ -67,18 +67,6 @@
     font-weight: 700;
     color: #bbf7d0;
   }
-  .papan {
-    display: inline-grid;
-    grid-template-columns: repeat(4, 50px);
-    gap: 5px;
-    margin-top: 2rem;
-    justify-content: center;
-  }
-  .papan input[type="checkbox"] {
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-  }
 </style>
 </head>
 <body>
@@ -97,141 +85,95 @@
   <div id="list"></div>
 </div>
 
-<h2 class="text-2xl font-bold mt-8">Papan Pemain</h2>
-<div class="papan" id="papan1">
-  <input type="checkbox" data-papan="1" data-row="1">
-  <input type="checkbox" data-papan="1" data-row="1">
-  <input type="checkbox" data-papan="1" data-row="1">
-  <input type="checkbox" data-papan="1" data-row="1">
-  
-  <input type="checkbox" data-papan="1" data-row="2">
-  <input type="checkbox" data-papan="1" data-row="2">
-  <input type="checkbox" data-papan="1" data-row="2">
-  <input type="checkbox" data-papan="1" data-row="2">
-  
-  <input type="checkbox" data-papan="1" data-row="3">
-  <input type="checkbox" data-papan="1" data-row="3">
-  <input type="checkbox" data-papan="1" data-row="3">
-  <input type="checkbox" data-papan="1" data-row="3">
-  
-  <input type="checkbox" data-papan="1" data-row="4">
-  <input type="checkbox" data-papan="1" data-row="4">
-  <input type="checkbox" data-papan="1" data-row="4">
-  <input type="checkbox" data-papan="1" data-row="4">
-</div>
-
 <script>
-const hurufADIL = ['A', 'D', 'I', 'L'];
-let angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
-let riwayat = JSON.parse(localStorage.getItem('adil-history')) || [];
+  const hurufADIL = ['A', 'D', 'I', 'L'];
+  let angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
+  let riwayat = JSON.parse(localStorage.getItem('adil-history')) || [];
 
-const currentEl = document.getElementById('current');
-const listEl = document.getElementById('list');
-const kocokBtn = document.getElementById('btnKocok');
+  const currentEl = document.getElementById('current');
+  const listEl = document.getElementById('list');
+  const kocokBtn = document.getElementById('btnKocok');
 
-let rollingInterval = null;
+  let rollingInterval = null;
 
-const rollSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_0dbf8c7a57.mp3?filename=rolling-dice-1-26694.mp3");
-const dingSound = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_1c9a2eb3f8.mp3?filename=correct-2-46134.mp3");
+  const rollSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_0dbf8c7a57.mp3?filename=rolling-dice-1-26694.mp3");
+  const dingSound = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_1c9a2eb3f8.mp3?filename=correct-2-46134.mp3");
 
-function tampilRiwayat() {
-  listEl.innerHTML = '';
-  riwayat.forEach(item => {
-    const div = document.createElement('div');
-    div.className = 'entry';
-    div.textContent = `${item.huruf}:${String(item.angka).padStart(2, '0')}`;
-    listEl.appendChild(div);
-  });
-}
-
-function animasiKocok() {
-  let counter = 0;
-  rollingInterval = setInterval(() => {
-    const huruf = hurufADIL[Math.floor(Math.random() * 4)];
-    const angka = Math.floor(Math.random() * 50) + 1;
-    currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
-    currentEl.classList.add("rolling");
-    counter++;
-    if (counter > 15) {
-      clearInterval(rollingInterval);
-      currentEl.classList.remove("rolling");
-      hasilKocok();
-    }
-  }, 100);
-}
-
-function hasilKocok() {
-  if (angkaBelumKeluar.length === 0) {
-    alert('Semua angka sudah keluar!');
-    return;
-  }
-
-  const huruf = hurufADIL[Math.floor(Math.random() * 4)];
-  const index = Math.floor(Math.random() * angkaBelumKeluar.length);
-  const angka = angkaBelumKeluar.splice(index, 1)[0];
-
-  const hasil = { huruf, angka };
-  localStorage.setItem('adil-last', angka); 
-  localStorage.setItem('adil-last-huruf', huruf);
-
-  currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
-  currentEl.classList.add("pop");
-  rollSound.pause(); rollSound.currentTime = 0;
-  dingSound.play();
-
-  setTimeout(() => currentEl.classList.remove("pop"), 800);
-
-  setTimeout(() => {
-    riwayat.unshift(hasil);
-    localStorage.setItem('adil-history', JSON.stringify(riwayat));
-    tampilRiwayat();
-  }, 2000);
-}
-
-kocokBtn.addEventListener('click', () => {
-  rollSound.currentTime = 0;
-  rollSound.play();
-  animasiKocok();
-});
-
-document.getElementById('btnReset').addEventListener('click', () => {
-  if (confirm('Reset semua hasil kocokan?')) {
-    angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
-    riwayat = [];
-    localStorage.removeItem('adil-last');
-    localStorage.removeItem('adil-last-huruf');
-    localStorage.removeItem('adil-history');
-    currentEl.textContent = '--';
+  function tampilRiwayat() {
     listEl.innerHTML = '';
-    document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-  }
-});
-
-tampilRiwayat();
-
-// ===== Fitur Deteksi Pemenang =====
-function cekPemenang() {
-  const papanList = document.querySelectorAll('.papan');
-  papanList.forEach((papan, idx) => {
-    const rows = {};
-    papan.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      const row = cb.dataset.row;
-      if (!rows[row]) rows[row] = [];
-      rows[row].push(cb.checked);
+    riwayat.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.textContent = `${item.huruf}:${String(item.angka).padStart(2, '0')}`;
+      listEl.appendChild(div);
     });
-    for (const row in rows) {
-      if (rows[row].every(val => val)) {
-        alert(`Papan #${idx + 1} MENANG!`);
-        return; // hanya satu alert per cek
+  }
+
+  function animasiKocok() {
+    let counter = 0;
+    rollingInterval = setInterval(() => {
+      const huruf = hurufADIL[Math.floor(Math.random() * 4)];
+      const angka = Math.floor(Math.random() * 50) + 1;
+      currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+      currentEl.classList.add("rolling");
+      counter++;
+      if (counter > 15) { // ~1.5 detik animasi
+        clearInterval(rollingInterval);
+        currentEl.classList.remove("rolling");
+        hasilKocok();
       }
+    }, 100);
+  }
+
+  function hasilKocok() {
+    if (angkaBelumKeluar.length === 0) {
+      alert('Semua angka sudah keluar!');
+      return;
+    }
+
+    const huruf = hurufADIL[Math.floor(Math.random() * 4)];
+    const index = Math.floor(Math.random() * angkaBelumKeluar.length);
+    const angka = angkaBelumKeluar.splice(index, 1)[0];
+
+    const hasil = { huruf, angka };
+    localStorage.setItem('adil-last', angka); 
+    localStorage.setItem('adil-last-huruf', huruf);
+
+    // efek hasil
+    currentEl.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+    currentEl.classList.add("pop");
+    rollSound.pause(); rollSound.currentTime = 0;
+    dingSound.play();
+
+    setTimeout(() => currentEl.classList.remove("pop"), 800);
+
+    // masukkan ke riwayat setelah 2 detik
+    setTimeout(() => {
+      riwayat.unshift(hasil);
+      localStorage.setItem('adil-history', JSON.stringify(riwayat));
+      tampilRiwayat();
+    }, 2000);
+  }
+
+  kocokBtn.addEventListener('click', () => {
+    rollSound.currentTime = 0;
+    rollSound.play();
+    animasiKocok();
+  });
+
+  document.getElementById('btnReset').addEventListener('click', () => {
+    if (confirm('Reset semua hasil kocokan?')) {
+      angkaBelumKeluar = Array.from({length: 50}, (_, i) => i + 1);
+      riwayat = [];
+      localStorage.removeItem('adil-last');
+      localStorage.removeItem('adil-last-huruf');
+      localStorage.removeItem('adil-history');
+      currentEl.textContent = '--';
+      listEl.innerHTML = '';
     }
   });
-}
 
-// Tambahkan event listener ke semua checkbox
-document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-  cb.addEventListener('change', cekPemenang);
-});
+  tampilRiwayat();
 </script>
 </body>
 </html>
