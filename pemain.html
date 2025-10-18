@@ -1,50 +1,51 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pemain - Permainan ADIL</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Pemain — Permainan ADIL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="player-container">
-    <header>
-      <a class="back" href="index.html">← Kembali</a>
-      <h1>🎯 PERMAINAN ADIL — PEMAIN</h1>
+<body class="bg-gradient-to-b from-emerald-700 to-emerald-500 min-h-screen flex items-start justify-center py-10">
+  <div class="w-full max-w-4xl mx-6">
+    <header class="flex items-center justify-between mb-6 text-white">
+      <a href="index.html" class="text-sm bg-white/10 px-3 py-2 rounded-lg hover:bg-white/20">← Kembali</a>
+      <h1 class="text-2xl font-extrabold">🎯 PERMAINAN ADIL — PEMAIN</h1>
+      <div></div>
     </header>
 
-    <section class="player-panel">
-      <div class="controls-row">
-        <label for="select-board">Pilih Papan:</label>
-        <select id="select-board">
+    <section class="bg-emerald-900/40 p-6 rounded-2xl shadow-2xl text-white">
+      <div class="flex flex-col sm:flex-row gap-4 items-center mb-4">
+        <label class="text-sm">Pilih Papan</label>
+        <select id="select-board" class="px-3 py-2 rounded-md bg-white/5">
           <!-- options diisi JS -->
         </select>
-        <button id="btn-generate" class="btn small outline">Regenerate (reset semua papan)</button>
+        <button id="btn-change" class="btn-small outline">GANTI PAPAN (acak semua)</button>
+        <button id="btn-reset-checks" class="btn-small">RESET CENTANG</button>
+        <label class="ml-auto inline-flex items-center gap-2 text-sm"><input id="auto-check" type="checkbox" class="accent-emerald-300"> Centang otomatis</label>
       </div>
 
-      <div id="board-wrap" class="board-wrap">
-        <!-- papan 4x4 di sini -->
+      <div id="board-wrap" class="flex justify-center">
+        <!-- papan tampil di sini -->
       </div>
 
-      <div class="player-footer muted">
-        <label><input type="checkbox" id="auto-check"> Centang otomatis saat host memanggil</label>
-      </div>
-
-      <div>
-        <p class="muted small">Papan dibuat acak sekali dan disimpan di browsermu. Untuk mendapatkan papan lain, pilih nomor papan.</p>
+      <div class="mt-4 text-sm text-emerald-100/80">
+        Papan dibuat acak sekali dan disimpan di browser ini. Untuk mendapatkan papan lain, pilih nomor papan.
       </div>
     </section>
   </div>
 
   <script src="script.js"></script>
   <script>
-    // Pemain-specific binding
+    // Pemain UI
     const selectBoard = document.getElementById('select-board');
     const boardWrap = document.getElementById('board-wrap');
-    const btnGenerate = document.getElementById('btn-generate');
+    const btnChange = document.getElementById('btn-change');
+    const btnResetChecks = document.getElementById('btn-reset-checks');
     const autoCheck = document.getElementById('auto-check');
 
-    function renderSelect() {
+    function populateSelect() {
       selectBoard.innerHTML = '';
       for (let i=1;i<=10;i++){
         const opt = document.createElement('option');
@@ -54,72 +55,85 @@
       }
     }
 
-    function renderBoard(idx) {
-      const board = ADIL.getBoards()[idx];
+    function renderBoard(index) {
+      const boards = ADIL.getBoards();
+      const board = boards?.[index];
       if (!board) return;
       boardWrap.innerHTML = '';
       const grid = document.createElement('div');
-      grid.className = 'grid-4';
-      board.forEach((num, i) => {
+      grid.className = 'grid-4-modern';
+      board.forEach(num => {
         const cell = document.createElement('div');
-        cell.className = 'cell';
-        const numText = String(num).padStart(2,'0');
-        cell.innerHTML = `<span class="num">${numText}</span>
-                          <label class="chk"><input type="checkbox" data-num="${num}"/> </label>`;
+        cell.className = 'cell-modern';
+        const txt = String(num).padStart(2,'0');
+        cell.innerHTML = `
+          <div class="num-modern">${txt}</div>
+          <label class="check-wrap">
+            <input type="checkbox" data-num="${num}" class="vis-check"/>
+            <svg class="check-svg" viewBox="0 0 24 24" fill="none" stroke="white"><path d="M5 13l4 4L19 7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </label>
+        `;
         grid.appendChild(cell);
       });
       boardWrap.appendChild(grid);
+      // attach events for checkboxes
+      grid.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+        cb.addEventListener('change', ()=> {
+          // optionally persist checks per board in localStorage if desired
+        });
+      });
     }
 
     selectBoard.addEventListener('change', ()=> {
       renderBoard(Number(selectBoard.value));
     });
 
-    btnGenerate.addEventListener('click', ()=> {
-      if (!confirm('Regenerate akan membuat 10 papan baru dan menggantikan yang sekarang untuk semua papan di browser ini. Lanjut?')) return;
+    btnChange.addEventListener('click', ()=> {
+      if (!confirm('Ganti papan akan membuat 10 papan baru (disimpan di browser ini). Lanjut?')) return;
       ADIL.generateAndStoreBoards(true);
       renderBoard(0);
     });
 
-    // Reaksi saat host memanggil (sumber: storage or URL param)
+    btnResetChecks.addEventListener('click', ()=> {
+      boardWrap.querySelectorAll('input[type="checkbox"]').forEach(cb=> cb.checked = false);
+    });
+
+    // highlight when host calls
     function highlightCalled(num) {
-      // cek jika ada di board tampil
-      const checkboxes = boardWrap.querySelectorAll('input[type="checkbox"]');
-      let found = false;
-      checkboxes.forEach(chk => {
-        if (Number(chk.dataset.num) === num) {
-          // sorot sel
-          const cell = chk.closest('.cell');
-          cell.classList.add('highlight');
-          // auto-check jika aktif
-          if (autoCheck.checked) chk.checked = true;
-          found = true;
-          setTimeout(()=> cell.classList.remove('highlight'), 1200);
+      const checks = boardWrap.querySelectorAll('input[type="checkbox"]');
+      checks.forEach(cb=>{
+        const n = Number(cb.dataset.num);
+        if (n === num) {
+          const cell = cb.closest('.cell-modern');
+          cell.classList.add('pulse');
+          if (autoCheck.checked) cb.checked = true;
+          setTimeout(()=> cell.classList.remove('pulse'), 900);
         }
       });
-      return found;
     }
 
-    // listen storage changes (host pushes history)
+    // listen storage events
     window.addEventListener('storage', (ev) => {
       if (ev.key === ADIL.STORAGE_KEYS.LAST) {
-        const last = Number(ev.newValue);
+        const last = Number(localStorage.getItem(ADIL.STORAGE_KEYS.LAST));
         if (!isNaN(last)) highlightCalled(last);
+      }
+      // boards regenerated in other tab
+      if (ev.key === 'adil_dummy_boards') {
+        ADIL.initBoardsIfNeeded();
+        renderBoard(Number(selectBoard.value || 0));
       }
     });
 
-    // if opened with ?last=NN
+    // open with ?last=NN
     const params = new URLSearchParams(window.location.search);
     if (params.has('last')) {
-      const v = parseInt(params.get('last'),10);
-      if (!isNaN(v)) {
-        // mark in UI
-        setTimeout(()=> highlightCalled(v), 200);
-      }
+      const v = Number(params.get('last'));
+      if (!isNaN(v)) setTimeout(()=> highlightCalled(v), 200);
     }
 
     // init
-    renderSelect();
+    populateSelect();
     ADIL.initBoardsIfNeeded();
     renderBoard(0);
   </script>
