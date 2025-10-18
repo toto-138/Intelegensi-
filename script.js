@@ -1,34 +1,33 @@
 /* script.js
-   ADIL shared logic:
-   - generate 10 boards (4x4) unique per board (no duplicates inside one board)
-   - store boards in localStorage key ADIL_BOARDS_v1
-   - host draws number -> saves last and history to localStorage
-   - players read boards and listen for updates (storage event)
+   Shared ADIL logic for Host & Player (no backend)
+   - generates 10 boards of 16 unique numbers (1..50) and stores to localStorage
+   - hostDraw: picks next random number (no duplicates) and stores history & last
+   - players listen to storage events and highlight/check matching numbers
 */
 
-const ADIL = (function() {
+const ADIL = (function(){
   const STORAGE_KEYS = {
-    BOARDS: 'adil_boards_v1',
-    HISTORY: 'adil_history_v1',
-    LAST: 'adil_last_v1'
+    BOARDS: 'adil_boards_v2',
+    HISTORY: 'adil_history_v2',
+    LAST: 'adil_last_v2'
   };
 
-  function randSample(arr, k) {
+  // util: sample k items without replacement
+  function sample(arr, k) {
     const a = arr.slice();
-    const r = [];
+    const res = [];
     for (let i=0;i<k;i++){
       const idx = Math.floor(Math.random()*a.length);
-      r.push(a.splice(idx,1)[0]);
+      res.push(a.splice(idx,1)[0]);
     }
-    return r;
+    return res;
   }
 
   function generateBoards() {
     const boards = [];
     for (let b=0;b<10;b++){
-      // sample 16 unique numbers from 1..50
       const pool = Array.from({length:50},(_,i)=>i+1);
-      const board = randSample(pool,16);
+      const board = sample(pool, 16);
       boards.push(board);
     }
     return boards;
@@ -41,31 +40,43 @@ const ADIL = (function() {
   function getBoards() {
     const raw = localStorage.getItem(STORAGE_KEYS.BOARDS);
     if (!raw) return null;
-    try {
-      return JSON.parse(raw);
-    } catch(e) { return null; }
+    try { return JSON.parse(raw); } catch(e){ return null; }
   }
 
   function initBoardsIfNeeded() {
     if (!getBoards()) {
-      const boards = generateBoards();
-      saveBoards(boards);
+      const b = generateBoards();
+      saveBoards(b);
+      // notify other tabs
+      localStorage.setItem('adil_dummy_boards', String(Date.now()));
+      return b;
+    }
+    return getBoards();
+  }
+
+  function generateAndStoreBoards(force=false) {
+    if (force) {
+      const b = generateBoards();
+      saveBoards(b);
+      localStorage.setItem('adil_dummy_boards', String(Date.now()));
+      return b;
+    } else {
+      return initBoardsIfNeeded();
     }
   }
 
-  // history: array of strings like "HH:MM:SS - NN"
   function getHistory() {
     const raw = localStorage.getItem(STORAGE_KEYS.HISTORY);
     return raw ? JSON.parse(raw) : [];
   }
 
-  function pushHistoryEntry(txt) {
-    const h = getHistory();
-    h.unshift(txt); // newest first
-    localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(h));
-    // also set LAST
-    const lastNum = Number(String(txt).match(/\d+/));
-    if (!isNaN(lastNum)) localStorage.setItem(STORAGE_KEYS.LAST, String(lastNum));
+  function pushHistoryEntry(str) {
+    const hist = getHistory();
+    hist.unshift(str);
+    localStorage.setItem(STORAGE_KEYS.HISTORY, JSON.stringify(hist));
+    // update LAST as number only
+    const m = str.match(/(\d{1,2})\b/);
+    if (m) localStorage.setItem(STORAGE_KEYS.LAST, m[1]);
   }
 
   function getLast() {
@@ -74,69 +85,56 @@ const ADIL = (function() {
   }
 
   function hostDraw(opts={}) {
-    // pick random from remaining 1..50 that not in history
-    const used = getHistory().map(s => {
-      const m = s.match(/(\d{1,2})/);
+    // compute used numbers
+    const used = getHistory().map(s=>{
+      const m = s.match(/(\d{1,2})\b/);
       return m ? Number(m[1]) : null;
     }).filter(x=>x);
+    // pool = numbers 1..50 not in used
     const pool = [];
     for (let i=1;i<=50;i++) if (!used.includes(i)) pool.push(i);
     if (!pool.length) {
       alert('Semua angka sudah keluar!');
       return null;
     }
-    const index = Math.floor(Math.random()*pool.length);
-    const angka = pool[index];
+    const idx = Math.floor(Math.random()*pool.length);
+    const angka = pool[idx];
     const ts = new Date().toLocaleTimeString();
     const entry = `${ts} - ${angka}`;
-    // animation if requested: update displayEl rapidly then set final
+    // animation support
     if (opts.animate && opts.displayEl) {
       const el = opts.displayEl;
-      let t = 0;
-      const iv = setInterval(()=> {
-        el.textContent = String(Math.floor(Math.random()*50)+1);
-        el.style.transform = 'scale(1.2)';
-        setTimeout(()=> el.style.transform = 'scale(1)', 80);
-        t += 100;
-        if (t >= 1500) {
+      let t=0;
+      const iv = setInterval(()=>{
+        el.textContent = String(Math.floor(Math.random()*50)+1).padStart(2,'0');
+        el.classList.add('pop');
+        setTimeout(()=> el.classList.remove('pop'), 80);
+        t+=100;
+        if (t>=1400) {
           clearInterval(iv);
-          el.textContent = String(angka);
+          el.textContent = String(angka).padStart(2,'0');
+          el.classList.add('pop');
+          setTimeout(()=> el.classList.remove('pop'), 400);
         }
-      }, 80);
+      }, 100);
     }
+
     pushHistoryEntry(entry);
-    // broadcast via storage (localStorage already written). Return angka.
-    // Some browsers won't fire storage event in same tab, but other tabs/devices will get update.
+    // return angka
     return angka;
   }
 
   function resetHistory() {
     localStorage.removeItem(STORAGE_KEYS.HISTORY);
     localStorage.removeItem(STORAGE_KEYS.LAST);
-    // trigger storage events by toggling a dummy key
     localStorage.setItem('adil_dummy_ts', String(Date.now()));
   }
 
   function pushExternalNumber(n) {
-    // used when opening share link ?last=NN
     const ts = new Date().toLocaleTimeString();
     pushHistoryEntry(`${ts} - ${n}`);
   }
 
-  function generateAndStoreBoards(force=false) {
-    if (force) {
-      const b = generateBoards();
-      saveBoards(b);
-      // notify other tabs
-      localStorage.setItem('adil_dummy_boards', String(Date.now()));
-      return b;
-    } else {
-      initBoardsIfNeeded();
-      return getBoards();
-    }
-  }
-
-  // expose
   return {
     STORAGE_KEYS,
     initBoardsIfNeeded,
