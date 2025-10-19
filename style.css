@@ -55,8 +55,20 @@
   justify-content: center;
   align-items: center;
 }
+
+/* player grid modern */
+.grid-4-modern {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(64px,96px));
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* cell default (belum dicentang) */
 .cell-modern {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  background: #38BDF8; /* biru terang untuk default */
+  color: white;         /* teks putih */
   border-radius: 12px;
   padding: 10px;
   min-width: 64px;
@@ -65,9 +77,16 @@
   align-items:center;
   justify-content:center;
   position:relative;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  box-shadow: 0 6px 16px rgba(56,189,248,0.2);
   transition: transform .12s ease, box-shadow .12s ease, background .12s;
 }
+
+/* angka yang dicentang */
+.cell-modern.checked {
+  background: #38BDF8;  /* biru terang sama seperti default */
+  color: white;          /* teks putih */
+  box-shadow: 0 6px 16px rgba(56,189,248,0.4); /* glow biru */
+  }
 .num-modern {
   font-weight: 800;
   font-size: 18px;
