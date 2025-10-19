@@ -2,16 +2,16 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <title>PERMAINAN RAMBO KOCOK😋 — Pilih Peran</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* 🌑 LATAR & DASAR */
+    /* 🌑 LATAR UTAMA */
     body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at top, #0a0a0a 0%, #000000 80%);
+      background: radial-gradient(circle at top, #0b0b0b 0%, #000 90%);
       color: #d1d5db;
       font-family: 'Poppins', sans-serif;
       min-height: 100vh;
@@ -19,103 +19,96 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      position: relative;
     }
 
-    /* ✨ CAHAYA LEMBUT DI BELAKANG */
+    /* ✨ CAHAYA HIJAU LEMBUT DI BELAKANG */
     .glow-bg {
       position: absolute;
-      width: 500px;
-      height: 500px;
+      width: 400px;
+      height: 400px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(34,197,94,0.15), transparent 70%);
-      filter: blur(80px);
-      top: 10%;
+      background: radial-gradient(circle, rgba(34,197,94,0.12), transparent 70%);
+      filter: blur(70px);
+      top: 15%;
       left: 50%;
       transform: translateX(-50%);
-      animation: pulse 8s ease-in-out infinite alternate;
       z-index: 0;
+      opacity: 0.5;
     }
 
-    @keyframes pulse {
-      0% { opacity: 0.4; transform: translateX(-50%) scale(1); }
-      100% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
-    }
-
-    /* 🧩 KARTU UTAMA */
+    /* 🟩 KARTU UTAMA */
     main {
       position: relative;
       z-index: 2;
-      background: rgba(20, 31, 24, 0.75);
+      background: rgba(16, 24, 19, 0.85);
+      border-radius: 1.25rem;
       border: 1px solid rgba(212, 175, 55, 0.25);
-      backdrop-filter: blur(16px);
-      border-radius: 1.5rem;
-      padding: 2rem;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(212, 175, 55, 0.08);
-      width: 100%;
-      max-width: 28rem;
+      backdrop-filter: blur(10px);
+      padding: 2rem 1.5rem;
+      max-width: 25rem;
+      width: 90%;
       text-align: center;
-      animation: fadeIn 1s ease both;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      animation: fadeIn 0.8s ease both;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
+      from { opacity: 0; transform: translateY(25px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 🎮 IKON */
+    /* 🎲 IKON */
     .icon-box {
-      background: radial-gradient(circle, rgba(212, 175, 55, 0.25), rgba(34, 197, 94, 0.1));
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      width: 3.5rem;
-      height: 3.5rem;
+      background: radial-gradient(circle, rgba(212,175,55,0.2), rgba(34,197,94,0.05));
+      border: 1px solid rgba(212,175,55,0.3);
+      width: 3.3rem;
+      height: 3.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 1rem;
+      border-radius: 0.75rem;
       font-size: 1.8rem;
       color: #facc15;
       margin: 0 auto 1rem;
-      box-shadow: 0 0 20px rgba(212,175,55,0.15);
+      box-shadow: 0 0 15px rgba(212,175,55,0.15);
     }
 
     /* 🏷️ JUDUL */
     h1 {
       font-weight: 800;
-      font-size: 1.9rem;
+      font-size: 1.8rem;
       background: linear-gradient(90deg, #d4af37, #16a34a);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.4rem;
     }
 
     p {
       color: #9ca3af;
       font-size: 0.9rem;
+      line-height: 1.4;
     }
 
-    /* 🟩 TOMBOL GLASS GOLD */
+    /* 🟩 TOMBOL */
     .btn-prestige {
-      position: relative;
       display: inline-block;
       width: 100%;
-      padding: 1rem 1.2rem;
-      border-radius: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 0.75rem;
       font-weight: 600;
-      color: #d4af37;
-      background: rgba(26, 40, 31, 0.7);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 20px rgba(212,175,55,0.1);
-      transition: all 0.3s ease;
-      letter-spacing: 0.5px;
+      color: #e8d48b;
+      background: rgba(25, 35, 27, 0.75);
+      border: 1px solid rgba(212,175,55,0.25);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 15px rgba(212,175,55,0.1);
+      transition: all 0.25s ease;
     }
 
     .btn-prestige:hover {
-      background: rgba(212, 175, 55, 0.15);
+      background: rgba(212,175,55,0.1);
       color: #fcd34d;
-      box-shadow: 0 0 30px rgba(212,175,55,0.25);
-      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(212,175,55,0.2);
+      transform: translateY(-2px);
     }
 
     .btn-grid {
@@ -130,21 +123,22 @@
       color: #6b7280;
       font-size: 0.8rem;
       margin-top: 1.5rem;
+      line-height: 1.3;
     }
 
-    /* 🔆 EFEK SUDUT EMAS */
-    main::before {
-      content: "";
-      position: absolute;
-      top: -2px;
-      left: -2px;
-      right: -2px;
-      bottom: -2px;
-      border-radius: 1.5rem;
-      border: 1px solid rgba(212, 175, 55, 0.2);
-      pointer-events: none;
-      box-shadow: inset 0 0 15px rgba(212,175,55,0.15);
+    /* 📱 RESPONSIF */
+    @media (max-width: 480px) {
+      main {
+        padding: 1.5rem 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .btn-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
   </style>
 </head>
 
@@ -154,7 +148,7 @@
   <main>
     <div class="icon-box">🎲</div>
     <h1>RAMBO KOCOK 😋</h1>
-    <p>Permainan dengan nuansa elit gelap — siap kocok keberuntunganmu?</p>
+    <p>Permainan dengan nuansa <span style="color:#d4af37;">Dark Prestige</span> — elegan, tenang, dan eksklusif.</p>
 
     <div class="btn-grid">
       <a href="host.html" class="btn-prestige">Masuk sebagai <span class="text-yellow-400 font-semibold">HOST</span></a>
@@ -162,7 +156,7 @@
     </div>
 
     <footer>
-      <p>Papan pemain disimpan di browser kamu. Untuk sinkron lintas perangkat, Host dapat membagikan nomor terakhir.</p>
+      <p>Papan pemain disimpan di browser kamu.<br>Untuk sinkron lintas perangkat, Host dapat membagikan nomor terakhir.</p>
     </footer>
   </main>
 </body>
