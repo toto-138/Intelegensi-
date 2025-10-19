@@ -1,155 +1,186 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pemain | Permainan ADIL</title>
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
-<style>
-  body {
-    background: radial-gradient(circle at center, #064e3b, #022c22);
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    min-height: 100vh;
-  }
-  .board {
-    background: rgba(4, 120, 87, 0.35);
-    padding: 0.8rem;
-    border-radius: 1rem;
-    transition: transform 0.3s ease;
-  }
-  .board table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: center;
-  }
-  .board th {
-    background: #065f46;
-    color: #d1fae5;
-    padding: 0.5rem;
-    border-radius: 0.3rem;
-  }
-  .board td {
-    padding: 0.5rem;
-  }
-  .cell {
-    display: inline-block;
-    background: #10b981;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-  }
-  .cell:hover { transform: scale(1.05); }
-  .cell.checked {
-    background: #0a1950;           /* biru tua */
-    color: #a3c4ff;                /* teks biru muda agar kontras */
-    box-shadow: inset 0 0 8px #1e3a8a; /* glow biru */
-  }
-  #latest-number {
-    font-size: 4rem;
-    font-weight: 800;
-    margin: 1rem 0;
-    color: #6ee7b7;
-    text-shadow: 0 0 20px rgba(16,185,129,0.7);
-  }
-  #latest-number.pop {
-    transform: scale(1.2);
-    text-shadow: 0 0 40px rgba(16,185,129,1);
-  }
-  #options-panel {
-  position: absolute;
-  background: rgba(6,95,70,0.95);
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-top: 1rem;
-  display: none;
-  animation: slideIn 0.3s ease;
-  z-index: 100;
-  }
-@keyframes slideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-  .btn {
-    background: #10b981;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    font-weight: 600;
-    color: #fff;
-    transition: all 0.2s;
-  }
-  .btn:hover { background: #34d399; transform: scale(1.05); }
-  .boards-container {
-    display: grid;
-    gap: 1.5rem;
-    justify-content: center;
-    align-items: start;
-    margin-top: 1rem;
-  }
-  @media (min-width: 768px) {
-    .boards-container {
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pemain | Permainan ADIL</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background: radial-gradient(circle at center, #064e3b, #022c22);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
     }
-  }
-</style>
+
+    .board {
+      background: rgba(4, 120, 87, 0.35);
+      padding: 0.8rem;
+      border-radius: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .board table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    .board th {
+      background: #065f46;
+      color: #d1fae5;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+    }
+
+    .board td {
+      padding: 0.5rem;
+    }
+
+    .cell {
+      display: inline-block;
+      background: #10b981;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
+    }
+
+    .cell.checked {
+      background: #064e3b; /* hijau tua */
+      color: #d1fae5;
+      box-shadow: inset 0 0 8px #065f46;
+    }
+
+    #latest-number {
+      font-size: 4rem;
+      font-weight: 800;
+      margin: 1rem 0;
+      color: #6ee7b7;
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+    }
+
+    #latest-number.pop {
+      transform: scale(1.2);
+      text-shadow: 0 0 40px rgba(16, 185, 129, 1);
+    }
+
+    #options-panel {
+      position: absolute;
+      background: rgba(6, 95, 70, 0.95);
+      border-radius: 1rem;
+      padding: 1rem;
+      display: none;
+      animation: slideIn 0.3s ease;
+      z-index: 100;
+      top: 5rem;
+      right: 1.25rem;
+      width: 20rem;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .btn {
+      background: #10b981;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #34d399;
+      transform: scale(1.05);
+    }
+
+    .boards-container {
+      display: grid;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .boards-container {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+    }
+  </style>
 </head>
-<body class="flex flex-col items-center p-4">
+<body class="flex flex-col items-center p-4 relative">
+  <!-- Header -->
   <header class="w-full flex justify-between items-center mb-4">
     <h1 class="text-xl font-bold text-emerald-300">🎯 Permainan ADIL — Pemain</h1>
     <button id="btnOpsi" class="btn">⚙️ Opsi</button>
   </header>
 
+  <!-- Panel Opsi (di atas, muncul saat tombol diklik) -->
+  <div id="options-panel" class="text-center hidden">
+    <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
+    <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
+      <option value="1">1 papan</option>
+      <option value="2">2 papan</option>
+      <option value="3">3 papan</option>
+      <option value="4">4 papan</option>
+      <option value="5">5 papan</option>
+      <option value="6">6 papan</option>
+      <option value="7">7 papan</option>
+      <option value="8">8 papan</option>
+      <option value="9">9 papan</option>
+      <option value="10">10 papan</option>
+    </select>
+
+    <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
+    <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
+
+    <label class="inline-flex items-center space-x-2">
+      <input id="autoCheck" type="checkbox" class="form-checkbox text-emerald-400" />
+      <span>Centang Otomatis</span>
+    </label>
+  </div>
+
+  <!-- Angka Terbaru -->
   <div class="text-center">
     <div class="text-emerald-200 text-sm">Angka Terbaru:</div>
     <div id="latest-number">--</div>
   </div>
 
-  <header class="w-full flex justify-between items-center mb-4">
-  <h1 class="text-xl font-bold text-emerald-300">🎯 Permainan ADIL — Pemain</h1>
-  <button id="btnOpsi" class="btn">⚙️ Opsi</button>
-</header>
-
-<!-- Pindahkan panel ke sini -->
-<div id="options-panel" class="w-80 text-center absolute top-20 right-5 hidden">
-  <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
-  <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
-    <option value="1">1 papan</option>
-    <option value="2">2 papan</option>
-    <option value="3">3 papan</option>
-    <option value="4">4 papan</option>
-    <option value="5">5 papan</option>
-    <option value="6">6 papan</option>
-    <option value="7">7 papan</option>
-    <option value="8">8 papan</option>
-    <option value="9">9 papan</option>
-    <option value="10">10 papan</option>
-  </select>
-
-  <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
-  <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
-
-  <label class="inline-flex items-center space-x-2">
-    <input id="autoCheck" type="checkbox" class="form-checkbox text-emerald-400">
-    <span>Centang Otomatis</span>
-  </label>
-</div>
+  <!-- Container papan -->
+  <div id="boards-container" class="boards-container w-full max-w-7xl"></div>
 
   <script>
     const dingSound = new Audio('./sounds/ding.mp3');
     dingSound.volume = 0.5;
 
-    const HEAR = ['𝗔','𝗗','𝗜','𝗟'];
+    const HEADER = ['𝗔', '𝗗', '𝗜', '𝗟'];
     const boardsContainer = document.getElementById('boards-container');
     const btnOpsi = document.getElementById('btnOpsi');
     const panel = document.getElementById('options-panel');
 
+    // Toggle tampil/sembunyi panel
     btnOpsi.addEventListener('click', () => {
-  panel.classList.toggle('hidden');
-});
+      panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+    });
 
     // Data utama
     let boards = JSON.parse(localStorage.getItem('adil-boards')) || {};
@@ -158,7 +189,7 @@
 
     // Buat 10 papan acak
     function generateBoard(num) {
-      const nums = Array.from({length: 50}, (_, i) => i + 1);
+      const nums = Array.from({ length: 50 }, (_, i) => i + 1);
       const boardNums = [];
       for (let i = 0; i < 16; i++) {
         const idx = Math.floor(Math.random() * nums.length);
@@ -178,12 +209,13 @@
       localStorage.setItem('adil-checked', JSON.stringify(checkedCells));
     }
 
-    // Render papan sesuai pilihan jumlah
+    // Render papan
     function renderBoards() {
       boardsContainer.innerHTML = '';
       for (let n = 1; n <= jumlahPapan; n++) {
         const boardEl = document.createElement('div');
         boardEl.className = 'board';
+
         const title = document.createElement('div');
         title.className = 'text-center text-emerald-200 font-semibold mb-1';
         title.textContent = `Papan #${n}`;
@@ -191,18 +223,20 @@
 
         const table = document.createElement('table');
         const headerRow = document.createElement('tr');
+
         HEADER.forEach(h => {
           const th = document.createElement('th');
           th.textContent = h;
           headerRow.appendChild(th);
         });
+
         table.appendChild(headerRow);
 
         const nums = boards[n];
         for (let r = 0; r < 4; r++) {
           const tr = document.createElement('tr');
           for (let c = 0; c < 4; c++) {
-            const num = nums[r*4 + c];
+            const num = nums[r * 4 + c];
             const td = document.createElement('td');
             const cell = document.createElement('div');
             cell.className = 'cell';
@@ -219,12 +253,13 @@
           }
           table.appendChild(tr);
         }
+
         boardEl.appendChild(table);
         boardsContainer.appendChild(boardEl);
       }
     }
 
-    // Pilihan jumlah papan 1–10
+    // Ubah jumlah papan
     const jumlahSelect = document.getElementById('jumlah-papan');
     jumlahSelect.value = jumlahPapan;
     jumlahSelect.addEventListener('change', e => {
@@ -250,26 +285,26 @@
       renderBoards();
     });
 
-    // Update angka terbaru dari Host (huruf + angka)
-function updateLatestNumber(huruf, angka) {
-  const el = document.getElementById('latest-number');
-  el.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
-  el.classList.add('pop');
-  dingSound.currentTime = 0;
-  dingSound.play();
-  setTimeout(() => el.classList.remove('pop'), 500);
-}
+    // Update angka terbaru dari Host
+    function updateLatestNumber(huruf, angka) {
+      const el = document.getElementById('latest-number');
+      el.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+      el.classList.add('pop');
+      dingSound.currentTime = 0;
+      dingSound.play();
+      setTimeout(() => el.classList.remove('pop'), 500);
+    }
 
-// Dengarkan perubahan localStorage dari Host
-window.addEventListener('storage', e => {
-  if (e.key === 'adil-last-huruf') {
-    const huruf = e.newValue;
-    const angka = Number(localStorage.getItem('adil-last'));
-    if (!isNaN(angka)) updateLatestNumber(huruf, angka);
-  }
-});
+    // Dengarkan perubahan localStorage dari Host
+    window.addEventListener('storage', e => {
+      if (e.key === 'adil-last-huruf') {
+        const huruf = e.newValue;
+        const angka = Number(localStorage.getItem('adil-last'));
+        if (!isNaN(angka)) updateLatestNumber(huruf, angka);
+      }
+    });
 
     renderBoards();
   </script>
 </body>
-                                 </html>
+        </html>
