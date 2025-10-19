@@ -156,10 +156,17 @@
   }
 
   kocokBtn.addEventListener('click', () => {
-    rollSound.currentTime = 0;
-    rollSound.play();
-    animasiKocok();
-  });
+  if (kocokBtn.disabled) return; // mencegah klik jika sedang delay
+  kocokBtn.disabled = true;      // nonaktifkan tombol
+  rollSound.currentTime = 0;
+  rollSound.play();
+  animasiKocok();
+
+  // aktifkan kembali tombol setelah 3 detik
+  setTimeout(() => {
+    kocokBtn.disabled = false;
+  }, 3000); // 3000ms = 3 detik
+});
 
   document.getElementById('btnReset').addEventListener('click', () => {
     if (confirm('Reset semua hasil kocokan?')) {
