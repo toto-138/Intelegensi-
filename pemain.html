@@ -3,45 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pemain | Permainan ADIL 💎</title>
+<title>Pemain | Permainan ADIL</title>
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
-
 <style>
-  /* 🌌 LATAR & DASAR */
+  /* 🌿 Tema hijau tua seperti semula */
   body {
-    background: radial-gradient(circle at center, #001a14, #000814);
-    color: #e0fef7;
+    background: radial-gradient(circle at center, #064e3b, #022c22);
+    color: white;
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
   }
-
-  header {
-    backdrop-filter: blur(12px);
-    background: rgba(0, 255, 204, 0.05);
-    border: 1px solid rgba(0,255,204,0.2);
+  .board {
+    background: rgba(4, 120, 87, 0.35);
+    padding: 0.8rem;
     border-radius: 1rem;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 0 25px rgba(0,255,204,0.1);
+    transition: transform 0.3s ease;
   }
-
-  /* 🌐 TOMBOL UTAMA */
+  .board table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+  }
+  .board th {
+    background: #065f46;
+    color: #d1fae5;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+  }
+  .board td {
+    padding: 0.5rem;
+  }
+  .cell {
+    display: inline-block;
+    background: #10b981;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .cell:hover { transform: scale(1.05); }
+  .cell.checked {
+    background: #0a1950;           /* biru tua */
+    color: #a3c4ff;                /* teks biru muda */
+    box-shadow: inset 0 0 8px #1e3a8a;
+  }
+  #latest-number {
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 1rem 0;
+    color: #6ee7b7;
+    text-shadow: 0 0 20px rgba(16,185,129,0.7);
+  }
+  #latest-number.pop {
+    transform: scale(1.2);
+    text-shadow: 0 0 40px rgba(16,185,129,1);
+  }
   .btn {
-    background: linear-gradient(135deg, #00ffa3, #00e0ff);
-    padding: 0.6rem 1.3rem;
-    border-radius: 0.75rem;
+    background: #10b981;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
     font-weight: 600;
-    color: #001f17;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(0,255,204,0.4);
+    color: #fff;
+    transition: all 0.2s;
   }
-  .btn:hover {
-    transform: scale(1.07);
-    box-shadow: 0 0 30px rgba(0,255,204,0.8);
-  }
-  .btn:active { transform: scale(0.97); }
+  .btn:hover { background: #34d399; transform: scale(1.05); }
 
-  /* 🎛️ PANEL OPSI */
+  /* 💎 PANEL OPSI futuristik emerald-biru neon */
   #options-panel {
     position: absolute;
     top: 90px;
@@ -49,12 +79,12 @@
     width: 18rem;
     backdrop-filter: blur(14px);
     background: rgba(0,255,204,0.1);
-    border: 1px solid rgba(0,255,204,0.2);
+    border: 1px solid rgba(0,255,204,0.25);
     border-radius: 1rem;
     padding: 1rem;
     display: none;
     animation: slideDown 0.4s ease;
-    box-shadow: 0 0 25px rgba(0,255,204,0.15);
+    box-shadow: 0 0 25px rgba(0,255,204,0.3);
     z-index: 100;
   }
   @keyframes slideDown {
@@ -62,7 +92,7 @@
     to { transform: translateY(0); opacity: 1; }
   }
 
-  select {
+  #options-panel select {
     background: rgba(0,255,204,0.15);
     border: 1px solid rgba(0,255,204,0.3);
     color: #aafff4;
@@ -72,26 +102,32 @@
     width: 100%;
     transition: all 0.3s ease;
   }
-  select:focus {
+  #options-panel select:focus {
     outline: none;
     box-shadow: 0 0 10px #00ffa3;
   }
-
-  /* 🎯 ANGKA TERBARU */
-  #latest-number {
-    font-size: 4rem;
-    font-weight: 800;
-    margin: 1rem 0;
-    color: #00ffd0;
-    text-shadow: 0 0 40px #00ffc3;
-    transition: all 0.4s ease;
+  #options-panel .btn {
+    background: linear-gradient(135deg, #00ffa3, #00e0ff);
+    color: #001f17;
+    box-shadow: 0 0 20px rgba(0,255,204,0.4);
+    transition: all 0.3s ease;
   }
-  #latest-number.pop {
-    transform: scale(1.25);
-    text-shadow: 0 0 80px #00ffcc;
+  #options-panel .btn:hover {
+    transform: scale(1.07);
+    box-shadow: 0 0 30px rgba(0,255,204,0.8);
+  }
+  #btnTutup {
+    margin-top: 0.5rem;
+    background: rgba(255, 50, 50, 0.2);
+    color: #ffbaba;
+    border: 1px solid rgba(255, 50, 50, 0.4);
+    box-shadow: 0 0 12px rgba(255, 80, 80, 0.5);
+  }
+  #btnTutup:hover {
+    background: rgba(255, 70, 70, 0.4);
+    transform: scale(1.05);
   }
 
-  /* 🟩 PAPAN */
   .boards-container {
     display: grid;
     gap: 1.5rem;
@@ -104,67 +140,26 @@
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
   }
-
-  .board {
-    background: rgba(0,255,204,0.08);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0,255,204,0.2);
-    border-radius: 1rem;
-    padding: 0.8rem;
-    transition: transform 0.3s ease;
-    box-shadow: 0 0 20px rgba(0,255,204,0.08);
-  }
-  .board:hover { transform: scale(1.03); }
-
-  .board th {
-    background: rgba(0,255,204,0.25);
-    color: #e0fff8;
-    padding: 0.5rem;
-    border-radius: 0.3rem;
-  }
-  .cell {
-    display: inline-block;
-    background: rgba(0,255,204,0.15);
-    border: 1px solid rgba(0,255,204,0.2);
-    border-radius: 0.5rem;
-    font-weight: 700;
-    width: 50px;
-    height: 50px;
-    line-height: 50px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    color: #a0ffe9;
-  }
-  .cell:hover {
-    transform: scale(1.07);
-    background: rgba(0,255,204,0.25);
-  }
-  .cell.checked {
-    background: #00ffd0;
-    color: #001f17;
-    box-shadow: 0 0 20px #00ffd0;
-  }
-
 </style>
 </head>
-<body class="flex flex-col items-center p-4 relative">
 
+<body class="flex flex-col items-center p-4">
   <header class="w-full flex justify-between items-center mb-4">
-    <h1 class="text-xl font-bold text-emerald-300">💎 Permainan ADIL — Pemain</h1>
+    <h1 class="text-xl font-bold text-emerald-300">🎯 Permainan ADIL — Pemain</h1>
     <button id="btnOpsi" class="btn">⚙️ Opsi</button>
   </header>
 
-  <div class="text-center mt-4">
+  <div class="text-center">
     <div class="text-emerald-200 text-sm">Angka Terbaru:</div>
     <div id="latest-number">--</div>
   </div>
 
   <div id="boards-container" class="boards-container w-full max-w-7xl"></div>
 
-  <!-- 🎛️ PANEL OPSI -->
+  <!-- 💎 Panel opsi futuristik -->
   <div id="options-panel" class="text-center">
     <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
-    <select id="jumlah-papan" class="mb-2">
+    <select id="jumlah-papan" class="w-full mb-2">
       <option value="1">1 papan</option>
       <option value="2">2 papan</option>
       <option value="3">3 papan</option>
@@ -180,10 +175,12 @@
     <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
     <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
 
-    <label class="inline-flex items-center space-x-2 mt-2">
+    <label class="inline-flex items-center space-x-2 text-emerald-100">
       <input id="autoCheck" type="checkbox" class="form-checkbox text-emerald-400">
       <span>Centang Otomatis</span>
     </label>
+
+    <button id="btnTutup" class="btn w-full mt-3">❌ Tutup</button>
   </div>
 
   <script>
@@ -194,17 +191,17 @@
     const boardsContainer = document.getElementById('boards-container');
     const btnOpsi = document.getElementById('btnOpsi');
     const panel = document.getElementById('options-panel');
+    const btnTutup = document.getElementById('btnTutup');
 
-    // 🔽 Toggle panel opsi
     btnOpsi.addEventListener('click', () => {
-      if (panel.style.display === 'block') {
-        panel.style.display = 'none';
-      } else {
-        panel.style.display = 'block';
-      }
+      panel.style.display = 'block';
     });
 
-    // 🎲 Data utama
+    btnTutup.addEventListener('click', () => {
+      panel.style.display = 'none';
+    });
+
+    // Data utama
     let boards = JSON.parse(localStorage.getItem('adil-boards')) || {};
     let jumlahPapan = Number(localStorage.getItem('adil-jumlah')) || 1;
     let checkedCells = JSON.parse(localStorage.getItem('adil-checked')) || {};
@@ -236,7 +233,7 @@
         const boardEl = document.createElement('div');
         boardEl.className = 'board';
         const title = document.createElement('div');
-        title.className = 'text-center text-cyan-200 font-semibold mb-1';
+        title.className = 'text-center text-emerald-200 font-semibold mb-1';
         title.textContent = `Papan #${n}`;
         boardEl.appendChild(title);
 
@@ -253,7 +250,7 @@
         for (let r = 0; r < 4; r++) {
           const tr = document.createElement('tr');
           for (let c = 0; c < 4; c++) {
-            const num = nums[r * 4 + c];
+            const num = nums[r*4 + c];
             const td = document.createElement('td');
             const cell = document.createElement('div');
             cell.className = 'cell';
@@ -275,9 +272,7 @@
       }
     }
 
-    const jumlahSelect = document.getElementById('jumlah-papan');
-    jumlahSelect.value = jumlahPapan;
-    jumlahSelect.addEventListener('change', e => {
+    document.getElementById('jumlah-papan').addEventListener('change', e => {
       jumlahPapan = Number(e.target.value);
       localStorage.setItem('adil-jumlah', jumlahPapan);
       renderBoards();
@@ -318,4 +313,4 @@
     renderBoards();
   </script>
 </body>
-  </html>
+</html>
