@@ -110,29 +110,25 @@
 
   <div id="options-panel" class="w-80 text-center">
     <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
-    <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
-      <!-- Pilihan 1–10 papan -->
-      <option value="1">1 papan</option>
-      <option value="2">2 papan</option>
-      <option value="3">3 papan</option>
-      <option value="4">4 papan</option>
-      <option value="5">5 papan</option>
-      <option value="6">6 papan</option>
-      <option value="7">7 papan</option>
-      <option value="8">8 papan</option>
-      <option value="9">9 papan</option>
-      <option value="10">10 papan</option>
-    </select>
+    <select id="jumlah-papan" <div class="controls">
+  <button id="toggle-options">Tampilkan Berapa Papan ▼</button>
+  <div class="options-buttons">
+    <button class="papan-btn" data-value="1">1 papan</button>
+    <button class="papan-btn" data-value="2">2 papan</button>
+    <button class="papan-btn" data-value="3">3 papan</button>
+    <button class="papan-btn" data-value="4">4 papan</button>
+    <button class="papan-btn" data-value="5">5 papan</button>
+    <button class="papan-btn" data-value="6">6 papan</button>
+    <button class="papan-btn" data-value="7">7 papan</button>
+    <button class="papan-btn" data-value="8">8 papan</button>
+    <button class="papan-btn" data-value="9">9 papan</button>
+    <button class="papan-btn" data-value="10">10 papan</button>
 
-    <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
-    <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
-
-    <label class="inline-flex items-center space-x-2">
-      <input id="autoCheck" type="checkbox" class="form-checkbox text-emerald-400">
-      <span>Centang Otomatis</span>
-    </label>
+    <button id="btnGanti">🎲 GANTI SEMUA PAPAN</button>
+    <button id="btnReset">♻️ RESET CENTANG</button>
+    <button id="autoCheck">Centang Otomatis</button>
   </div>
-
+  
   <script>
     const dingSound = new Audio('./sounds/ding.mp3');
     dingSound.volume = 0.5;
