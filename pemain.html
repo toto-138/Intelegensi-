@@ -245,23 +245,24 @@
       renderBoards();
     });
 
-    // Update angka terbaru dari Host
-    function updateLatestNumber(num) {
-      const el = document.getElementById('latest-number');
-      el.textContent = String(num).padStart(2, '0');
-      el.classList.add('pop');
-      dingSound.currentTime = 0;
-      dingSound.play();
-      setTimeout(() => el.classList.remove('pop'), 500);
-    }
+    // Update angka terbaru dari Host (huruf + angka)
+function updateLatestNumber(huruf, angka) {
+  const el = document.getElementById('latest-number');
+  el.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
+  el.classList.add('pop');
+  dingSound.currentTime = 0;
+  dingSound.play();
+  setTimeout(() => el.classList.remove('pop'), 500);
+}
 
-    // Mendengarkan event localStorage (angka dari Host)
-    window.addEventListener('storage', e => {
-      if (e.key === 'adil-last') {
-        const val = Number(e.newValue);
-        if (!isNaN(val)) updateLatestNumber(val);
-      }
-    });
+// Dengarkan perubahan localStorage dari Host
+window.addEventListener('storage', e => {
+  if (e.key === 'adil-last-huruf') {
+    const huruf = e.newValue;
+    const angka = Number(localStorage.getItem('adil-last'));
+    if (!isNaN(angka)) updateLatestNumber(huruf, angka);
+  }
+});
 
     renderBoards();
   </script>
