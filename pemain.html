@@ -7,7 +7,7 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
 
 <style>
-/* 🌿 Tampilan hijau klasik */
+/* 🌿 Tampilan dasar hijau klasik */
 body {
   background: radial-gradient(circle at center, #064e3b, #022c22);
   color: white;
@@ -20,23 +20,6 @@ body {
   padding: 0.8rem;
   border-radius: 1rem;
   transition: transform 0.3s ease;
-}
-
-.board table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-.board th {
-  background: #065f46;
-  color: #d1fae5;
-  padding: 0.5rem;
-  border-radius: 0.3rem;
-}
-
-.board td {
-  padding: 0.5rem;
 }
 
 .cell {
@@ -53,29 +36,60 @@ body {
 .cell:hover {
   transform: scale(1.05);
 }
-
 .cell.checked {
   background: #065f46;
   color: #d1fae5;
   box-shadow: inset 0 0 8px #059669;
 }
 
-#latest-number {
-  font-size: 4rem;
-  font-weight: 800;
-  margin: 1rem 0;
-  color: #6ee7b7;
-  text-shadow: 0 0 20px rgba(16,185,129,0.7);
+/* ✨ Tombol Opsi futuristik (emerald & biru neon) */
+.btn-glass {
+  position: relative;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(59,130,246,0.15));
+  border: 1px solid rgba(59,130,246,0.4);
+  color: #a7f3d0;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 0 8px rgba(16,185,129,0.8);
+  box-shadow: 0 0 10px rgba(16,185,129,0.3), 0 0 20px rgba(59,130,246,0.25);
+  transition: all 0.3s ease;
 }
-#latest-number.pop {
-  transform: scale(1.2);
-  text-shadow: 0 0 40px rgba(16,185,129,1);
+.btn-glass:hover {
+  color: #fff;
+  box-shadow: 0 0 15px rgba(59,130,246,0.8), 0 0 30px rgba(16,185,129,0.6);
+  transform: scale(1.08);
 }
 
-/* ⚙️ Panel opsi tetap seperti versi modern */
+/* Tombol Tutup (❌) */
+.btn-close {
+  background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(16,185,129,0.2));
+  border: 1px solid rgba(16,185,129,0.4);
+  color: #a7f3d0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  line-height: 34px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(59,130,246,0.4);
+}
+.btn-close:hover {
+  background: rgba(59,130,246,0.3);
+  color: #fff;
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(59,130,246,0.8);
+}
+
+/* Panel opsi futuristik */
 #options-panel {
   position: absolute;
-  background: rgba(6,95,70,0.95);
+  background: rgba(6, 95, 70, 0.4);
+  border: 1px solid rgba(59,130,246,0.3);
   border-radius: 1rem;
   padding: 1rem;
   margin-top: 1rem;
@@ -84,13 +98,14 @@ body {
   z-index: 100;
   top: 4.5rem;
   right: 1.25rem;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 20px rgba(16,185,129,0.3), 0 0 40px rgba(59,130,246,0.2);
 }
 @keyframes slideIn {
   from { transform: translateY(-30px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Tombol umum */
 .btn {
   background: #10b981;
   padding: 0.5rem 1rem;
@@ -104,7 +119,6 @@ body {
   transform: scale(1.05);
 }
 
-/* Grid papan */
 .boards-container {
   display: grid;
   gap: 1.5rem;
@@ -123,12 +137,15 @@ body {
 <body class="flex flex-col items-center p-4">
   <header class="w-full flex justify-between items-center mb-4 relative">
     <h1 class="text-xl font-bold text-emerald-300">🎯 Permainan ADIL — Pemain</h1>
-    <button id="btnOpsi" class="btn">⚙️ Opsi</button>
+    <div class="flex items-center space-x-2">
+      <button id="btnOpsi" class="btn-glass">⚙️ Opsi</button>
+      <button id="btnTutup" class="btn-close hidden">❌</button>
+    </div>
 
-    <!-- Panel opsi di sini -->
+    <!-- Panel opsi -->
     <div id="options-panel" class="w-80 text-center absolute">
       <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
-      <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
+      <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-800/40 border border-emerald-500 mb-2 text-white font-semibold">
         <option value="1">1 papan</option>
         <option value="2">2 papan</option>
         <option value="3">3 papan</option>
@@ -153,33 +170,37 @@ body {
 
   <div class="text-center">
     <div class="text-emerald-200 text-sm">Angka Terbaru:</div>
-    <div id="latest-number">--</div>
+    <div id="latest-number" class="text-4xl font-bold text-emerald-300">--</div>
   </div>
 
   <div id="boards-container" class="boards-container w-full max-w-7xl"></div>
 
   <script>
-    // 🔊 Suara
     const dingSound = new Audio('./sounds/ding.mp3');
     dingSound.volume = 0.5;
 
-    // Elemen utama
     const HEADER = ['𝗔','𝗗','𝗜','𝗟'];
     const boardsContainer = document.getElementById('boards-container');
     const btnOpsi = document.getElementById('btnOpsi');
+    const btnTutup = document.getElementById('btnTutup');
     const panel = document.getElementById('options-panel');
 
-    // Toggle opsi
+    // Toggle buka/tutup panel
     btnOpsi.addEventListener('click', () => {
-      panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+      panel.style.display = 'block';
+      btnOpsi.classList.add('hidden');
+      btnTutup.classList.remove('hidden');
+    });
+    btnTutup.addEventListener('click', () => {
+      panel.style.display = 'none';
+      btnOpsi.classList.remove('hidden');
+      btnTutup.classList.add('hidden');
     });
 
-    // Data utama
     let boards = JSON.parse(localStorage.getItem('adil-boards')) || {};
     let jumlahPapan = Number(localStorage.getItem('adil-jumlah')) || 1;
     let checkedCells = JSON.parse(localStorage.getItem('adil-checked')) || {};
 
-    // Buat 10 papan acak
     function generateBoard(num) {
       const nums = Array.from({length: 50}, (_, i) => i + 1);
       const boardNums = [];
@@ -191,9 +212,7 @@ body {
     }
 
     if (Object.keys(boards).length < 10) {
-      for (let i = 1; i <= 10; i++) {
-        if (!boards[i]) generateBoard(i);
-      }
+      for (let i = 1; i <= 10; i++) if (!boards[i]) generateBoard(i);
       localStorage.setItem('adil-boards', JSON.stringify(boards));
     }
 
@@ -201,7 +220,6 @@ body {
       localStorage.setItem('adil-checked', JSON.stringify(checkedCells));
     }
 
-    // Render papan
     function renderBoards() {
       boardsContainer.innerHTML = '';
       for (let n = 1; n <= jumlahPapan; n++) {
@@ -247,7 +265,6 @@ body {
       }
     }
 
-    // Pilihan jumlah papan
     const jumlahSelect = document.getElementById('jumlah-papan');
     jumlahSelect.value = jumlahPapan;
     jumlahSelect.addEventListener('change', e => {
@@ -256,7 +273,6 @@ body {
       renderBoards();
     });
 
-    // Ganti semua papan
     document.getElementById('btnGanti').addEventListener('click', () => {
       boards = {};
       for (let i = 1; i <= 10; i++) generateBoard(i);
@@ -266,14 +282,12 @@ body {
       renderBoards();
     });
 
-    // Reset centang
     document.getElementById('btnReset').addEventListener('click', () => {
       checkedCells = {};
       saveChecked();
       renderBoards();
     });
 
-    // Update angka terbaru
     function updateLatestNumber(huruf, angka) {
       const el = document.getElementById('latest-number');
       el.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
@@ -283,7 +297,6 @@ body {
       setTimeout(() => el.classList.remove('pop'), 500);
     }
 
-    // Dengarkan perubahan dari Host
     window.addEventListener('storage', e => {
       if (e.key === 'adil-last-huruf') {
         const huruf = e.newValue;
