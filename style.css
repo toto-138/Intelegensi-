@@ -75,6 +75,13 @@
   text-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
+/* Angka yang dicentang berubah warna biru terang & teks putih */
+.cell-modern.checked {
+  background: #38BDF8;  /* biru terang */
+  color: white;          /* teks putih */
+  box-shadow: 0 6px 16px rgba(56,189,248,0.4); /* glow biru opsional */
+}
+
 /* custom checkbox */
 .check-wrap {
   position:absolute;
@@ -111,4 +118,4 @@
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.2); opacity: 0.9; text-shadow: 0 0 15px rgba(16,185,129,0.5); }
   100% { transform: scale(1); opacity: 1; }
-}
+    }
