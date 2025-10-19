@@ -61,17 +61,19 @@
     text-shadow: 0 0 40px rgba(16,185,129,1);
   }
   #options-panel {
-    background: rgba(6,95,70,0.95);
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-top: 1rem;
-    display: none;
-    animation: slideIn 0.3s ease;
+  position: absolute;
+  background: rgba(6,95,70,0.95);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  display: none;
+  animation: slideIn 0.3s ease;
+  z-index: 100;
   }
-  @keyframes slideIn {
-    from { transform: translateY(-15px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+@keyframes slideIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
   .btn {
     background: #10b981;
     padding: 0.5rem 1rem;
@@ -135,42 +137,19 @@
     <span>Centang Otomatis</span>
   </label>
 </div>
-    <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
-    <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
-      <!-- Pilihan 1–10 papan -->
-      <option value="1">1 papan</option>
-      <option value="2">2 papan</option>
-      <option value="3">3 papan</option>
-      <option value="4">4 papan</option>
-      <option value="5">5 papan</option>
-      <option value="6">6 papan</option>
-      <option value="7">7 papan</option>
-      <option value="8">8 papan</option>
-      <option value="9">9 papan</option>
-      <option value="10">10 papan</option>
-    </select>
-
-    <button id="btnGanti" class="btn w-full mb-2">🎲 GANTI SEMUA PAPAN</button>
-    <button id="btnReset" class="btn w-full mb-2">♻️ RESET CENTANG</button>
-
-    <label class="inline-flex items-center space-x-2">
-      <input id="autoCheck" type="checkbox" class="form-checkbox text-emerald-400">
-      <span>Centang Otomatis</span>
-    </label>
-  </div>
 
   <script>
     const dingSound = new Audio('./sounds/ding.mp3');
     dingSound.volume = 0.5;
 
-    const HEADER = ['𝗔','𝗗','𝗜','𝗟'];
+    const HEAR = ['𝗔','𝗗','𝗜','𝗟'];
     const boardsContainer = document.getElementById('boards-container');
     const btnOpsi = document.getElementById('btnOpsi');
     const panel = document.getElementById('options-panel');
 
     btnOpsi.addEventListener('click', () => {
-      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-    });
+  panel.classList.toggle('hidden');
+});
 
     // Data utama
     let boards = JSON.parse(localStorage.getItem('adil-boards')) || {};
