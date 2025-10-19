@@ -13,6 +13,7 @@
       color: white;
       font-family: 'Poppins', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
     .board {
@@ -74,17 +75,43 @@
       text-shadow: 0 0 40px rgba(16, 185, 129, 1);
     }
 
+    /* 🌿 Panel opsi transparan + tombol tutup */
     #options-panel {
       position: absolute;
-      background: rgba(6, 95, 70, 0.95);
-      border-radius: 1rem;
-      padding: 1rem;
-      display: none;
-      animation: slideIn 0.3s ease;
-      z-index: 100;
       top: 5rem;
       right: 1.25rem;
       width: 20rem;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      display: none;
+      background: rgba(6, 95, 70, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.35s ease;
+      z-index: 100;
+    }
+
+    /* Tombol tutup ❌ */
+    #btnClose {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.7rem;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fefefe;
+      border-radius: 9999px;
+      width: 1.8rem;
+      height: 1.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.8rem;
+      transition: all 0.25s ease;
+    }
+
+    #btnClose:hover {
+      background: rgba(239, 68, 68, 0.6);
+      transform: scale(1.1);
     }
 
     @keyframes slideIn {
@@ -134,9 +161,10 @@
     <button id="btnOpsi" class="btn">⚙️ Opsi</button>
   </header>
 
-  <!-- Panel Opsi (di atas, muncul saat tombol diklik) -->
+  <!-- 🌫️ Panel Opsi -->
   <div id="options-panel" class="text-center hidden">
-    <label for="jumlah-papan" class="block text-emerald-100 mb-1">Tampilkan Berapa Papan:</label>
+    <button id="btnClose">❌</button>
+    <label for="jumlah-papan" class="block text-emerald-100 mb-1 mt-4">Tampilkan Berapa Papan:</label>
     <select id="jumlah-papan" class="w-full p-2 rounded bg-emerald-700 mb-2 text-white font-semibold">
       <option value="1">1 papan</option>
       <option value="2">2 papan</option>
@@ -175,11 +203,17 @@
     const HEADER = ['𝗔', '𝗗', '𝗜', '𝗟'];
     const boardsContainer = document.getElementById('boards-container');
     const btnOpsi = document.getElementById('btnOpsi');
+    const btnClose = document.getElementById('btnClose');
     const panel = document.getElementById('options-panel');
 
-    // Toggle tampil/sembunyi panel
+    // Toggle panel (⚙️)
     btnOpsi.addEventListener('click', () => {
-      panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // Tutup panel (❌)
+    btnClose.addEventListener('click', () => {
+      panel.style.display = 'none';
     });
 
     // Data utama
@@ -187,7 +221,6 @@
     let jumlahPapan = Number(localStorage.getItem('adil-jumlah')) || 1;
     let checkedCells = JSON.parse(localStorage.getItem('adil-checked')) || {};
 
-    // Buat 10 papan acak
     function generateBoard(num) {
       const nums = Array.from({ length: 50 }, (_, i) => i + 1);
       const boardNums = [];
@@ -209,13 +242,11 @@
       localStorage.setItem('adil-checked', JSON.stringify(checkedCells));
     }
 
-    // Render papan
     function renderBoards() {
       boardsContainer.innerHTML = '';
       for (let n = 1; n <= jumlahPapan; n++) {
         const boardEl = document.createElement('div');
         boardEl.className = 'board';
-
         const title = document.createElement('div');
         title.className = 'text-center text-emerald-200 font-semibold mb-1';
         title.textContent = `Papan #${n}`;
@@ -223,13 +254,11 @@
 
         const table = document.createElement('table');
         const headerRow = document.createElement('tr');
-
         HEADER.forEach(h => {
           const th = document.createElement('th');
           th.textContent = h;
           headerRow.appendChild(th);
         });
-
         table.appendChild(headerRow);
 
         const nums = boards[n];
@@ -253,13 +282,11 @@
           }
           table.appendChild(tr);
         }
-
         boardEl.appendChild(table);
         boardsContainer.appendChild(boardEl);
       }
     }
 
-    // Ubah jumlah papan
     const jumlahSelect = document.getElementById('jumlah-papan');
     jumlahSelect.value = jumlahPapan;
     jumlahSelect.addEventListener('change', e => {
@@ -268,7 +295,6 @@
       renderBoards();
     });
 
-    // Ganti semua papan
     document.getElementById('btnGanti').addEventListener('click', () => {
       boards = {};
       for (let i = 1; i <= 10; i++) generateBoard(i);
@@ -278,14 +304,12 @@
       renderBoards();
     });
 
-    // Reset centang
     document.getElementById('btnReset').addEventListener('click', () => {
       checkedCells = {};
       saveChecked();
       renderBoards();
     });
 
-    // Update angka terbaru dari Host
     function updateLatestNumber(huruf, angka) {
       const el = document.getElementById('latest-number');
       el.textContent = `${huruf}:${String(angka).padStart(2, '0')}`;
@@ -295,7 +319,6 @@
       setTimeout(() => el.classList.remove('pop'), 500);
     }
 
-    // Dengarkan perubahan localStorage dari Host
     window.addEventListener('storage', e => {
       if (e.key === 'adil-last-huruf') {
         const huruf = e.newValue;
@@ -307,4 +330,4 @@
     renderBoards();
   </script>
 </body>
-        </html>
+    </html>
