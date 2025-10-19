@@ -3,26 +3,127 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>PERMAINAN RAMBO KOCOK😋— Pilih Peran</title>
+  <title>PERMAINAN RAMBO KOCOK😋 — Pilih Peran</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* 🌌 GLASS NEON FUTURISTIK */
+    body {
+      background: radial-gradient(circle at top, #001a14, #000814 60%);
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: #e0fff5;
+      overflow: hidden;
+    }
+
+    main {
+      background: rgba(0, 255, 204, 0.08);
+      border: 1px solid rgba(0, 255, 204, 0.25);
+      box-shadow: 0 0 40px rgba(0, 255, 204, 0.15), inset 0 0 25px rgba(0, 255, 204, 0.05);
+      backdrop-filter: blur(18px);
+      border-radius: 1.5rem;
+      transition: all 0.4s ease;
+    }
+
+    main:hover {
+      box-shadow: 0 0 60px rgba(0, 255, 204, 0.4), inset 0 0 35px rgba(0, 255, 204, 0.1);
+      transform: translateY(-3px);
+    }
+
+    /* 🎮 Tombol neon */
+    .btn-neon {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      color: #00ffe1;
+      text-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+      background: rgba(0, 255, 204, 0.12);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 18px rgba(0, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .btn-neon:hover {
+      background: rgba(0, 255, 255, 0.25);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
+      color: #00ffea;
+      transform: scale(1.05);
+    }
+
+    .btn-neon::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0,255,255,0.3) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .btn-neon:hover::after {
+      opacity: 1;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); opacity: 0.6; }
+      to { transform: scale(1.3); opacity: 0.2; }
+    }
+
+    /* 💠 Kotak ikon game */
+    .icon-box {
+      background: rgba(0, 255, 204, 0.15);
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.25);
+      border-radius: 1rem;
+    }
+
+    h1 {
+      background: linear-gradient(90deg, #00ffc6, #00bfff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    p {
+      color: #aaffee;
+    }
+
+    footer {
+      color: #77ffe0;
+      opacity: 0.8;
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+  </style>
 </head>
-<body class="bg-gradient-to-b from-emerald-600 to-emerald-500 min-h-screen flex items-center justify-center">
-  <main class="max-w-lg w-full p-8 bg-emerald-900/40 backdrop-blur rounded-2xl shadow-2xl text-white">
-    <div class="flex items-center gap-3 mb-6">
-      <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">🎲</div>
+
+<body class="flex items-center justify-center px-4">
+  <main class="max-w-lg w-full p-8 text-center">
+    <div class="flex items-center gap-3 mb-8 justify-center">
+      <div class="icon-box w-14 h-14 flex items-center justify-center text-3xl">🎲</div>
       <div>
-        <h1 class="text-2xl font-extrabold">RAMBO KOCOK😋</h1>
-        <p class="text-emerald-100/80 text-sm mt-1">Permainan Rambo Kocok😋,Mulai bermain dengan mengocok Rambo!</p>
+        <h1 class="text-3xl font-extrabold tracking-wide">RAMBO KOCOK 😋</h1>
+        <p class="text-sm mt-1">Mulai permainan dengan mengocok Rambo dan pilih peranmu!</p>
       </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <a href="host.html" class="block py-4 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-center font-semibold shadow-sm">Masuk sebagai <span class="text-emerald-200">HOST</span></a>
-      <a href="pemain.html" class="block py-4 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-center font-semibold shadow-sm">Masuk sebagai <span class="text-emerald-200">PEMAIN</span></a>
+      <a href="host.html" class="btn-neon">Masuk sebagai <span class="font-bold text-cyan-300">HOST</span></a>
+      <a href="pemain.html" class="btn-neon">Masuk sebagai <span class="font-bold text-cyan-300">PEMAIN</span></a>
     </div>
 
-    <p class="text-emerald-100/60 text-xs mt-5">Papan pemain dibuat secara acak sekali dan disimpan di browser kamu. Untuk sinkron lintas perangkat, Host dapat membagikan nomor terakhir.</p>
+    <footer class="mt-6">
+      <p>Papan pemain disimpan di browser kamu. Untuk sinkron lintas perangkat, Host dapat membagikan nomor terakhir.</p>
+    </footer>
   </main>
 </body>
 </html>
