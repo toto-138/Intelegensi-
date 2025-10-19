@@ -138,3 +138,19 @@
   50% { transform: scale(1.2); opacity: 0.9; text-shadow: 0 0 15px rgba(16,185,129,0.5); }
   100% { transform: scale(1); opacity: 1; }
     }
+
+/* ===== Animasi tombol opsi slide dari kiri ===== */
+.options-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  margin-top: 10px;
+}
+
+.options-buttons.show {
+  transform: translateX(0);
+  opacity: 1;
+}
